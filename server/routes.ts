@@ -70,8 +70,15 @@ class Routes {
   @Router.delete("/posts/:id")
   async deletePost(session: SessionDoc, id: string) {
     // TODO 3: delete the post with the given ID
+    const user = await Sessioning.getUser(session);
+    console.log(user);
+    const post = await Posting.getPostById(id);
+    if (post?.author.equals(user)) {
+      const result = Posting.delete(new ObjectId(id));
+      return result;
+    }
     //  - require the user deleting to be the author of the post (review `updatePost` above)
-    throw new Error("Not implemented!");
+    throw new Error("Not your post!");
   }
 }
 
